@@ -1,0 +1,12 @@
+syntax enable
+
+set t_Co=256
+set hlsearch
+set clipboard=autoselect
+set guioptions-=m
+set guioptions-=T
+
+" scrollbars
+set guioptions-=lrb
+
+set nu

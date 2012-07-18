@@ -1,0 +1,265 @@
+set encoding=utf-8
+
+" default file types
+set ffs=unix,dos,mac
+
+" doc strs
+au BufRead,BufNewFile *.py  set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.js  set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.html set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.json set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.less set ai sw=4 sts=4 et tw=72
+
+" special filetypes
+au BufNewFile *.html,*.py,*.pyw,*.c,*.h,*.json set fileformat=unix
+au! BufRead,BufNewFile *.json setfiletype json
+au BufNewFile,BufRead *.less set filetype=less
+au BufNewFile,BufRead *.styl set filetype=styl
+
+let python_highlight_all=1
+syntax on
+
+" bad whitespace
+highlight BadWhitespace ctermbg=red guibg=red
+" display tabs at the beginning of a line in Python mode as bad.
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+" make trailing whitespace be flagged as bad.
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+filetype plugin on
+set iskeyword+=.
+
+" don not be compatible with vi
+set nocompatible
+
+" Tell vim which characters to show for expanded TABs,
+" trailing whitespace, and end-of-lines. VERY useful!
+set list
+set listchars=tab:\|-,trail:·
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" searching patterns
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" search is case insensitive
+set ignorecase
+" search case sensitive if caps on
+set smartcase
+" show best match so far
+set incsearch
+" Highlight matches to the search
+set hlsearch
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" display
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" I use dark background
+set background=dark
+" Don't repaint when scripts are running
+set lazyredraw
+" Keep 3 lines below and above the cursor
+set scrolloff=3
+" row and column cursor is on
+set cursorline cursorcolumn
+" line numbers and column the cursor is on
+set ruler
+" Show line numbering
+set number
+" Use 1 col + 1 space for numbers
+set numberwidth=1
+set ttyfast
+
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
+colorscheme wombat256mod
+
+" tab labels show the filename without path(tail)
+set guitablabel=%N/\ %t\ %M
+
+if exists(":tab")
+	" Try to move to other windows if changing buf
+	set switchbuf=useopen,usetab
+else
+	" Try other windows & tabs if available
+	set switchbuf=useopen
+endif
+
+" add mouse interaction
+if has('mouse')
+  set mouse=a
+endif
+
+" We know xterm-debian is a color terminal
+if &term =~ "xterm-debian" || &term =~ "xterm-xfree86"
+  set t_Co=16
+  set t_Sf=[3%dm
+  set t_Sb=[4%dm
+else
+  set t_Co=256
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" messages, info, status
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use [+] [RO] [w] for modified, read-only, modified
+set shortmess+=a
+" Display what command is waiting for an operator
+set showcmd
+" Always show statusline, even if only 1 window
+set laststatus=2
+set statusline=%<%F%m%r%y%=%b\ 0x%B\ \ %l,%c%V\ %P
+" Notify me whenever any lines have changed
+set report=0
+" Y-N-C prompt if closing with unsaved changes
+set confirm
+" Disable visual bell!  I hate that flashing.
+set vb t_vb=
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" editing
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" backspace over anything! (Super backspace!)
+set backspace=indent,eol,start
+" For .2 seconds
+set matchtime=2
+" I can format for myself, thank you very much
+set formatoptions-=tc
+set nosmartindent
+set autoindent
+set cindent
+" tab stop of 4
+set tabstop=4
+" sw 4 spaces (used on auto indent)
+set shiftwidth=4
+" 4 spaces as a tab for bs/del
+set softtabstop=4
+" specially for html
+set matchpairs+=<:>
+" briefly jump to the previous matching parent
+set showmatch
+" remember more commands and search history
+set history=1000
+" se many muchos levels of undo
+set undolevels=1000
+" Autocomplete features in the status bar
+set wildmenu
+set wildmode=longest,list
+set wildignore=*.o,*.obj,*.bak,*.exe,*.py[co],*.swp,*~,*.class
+" paste mode
+set pastetoggle=<F2>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" autocommands
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("autocmd")
+	" Enabled file type detection
+	" Use the default filetype settings. If you also want to load indent files
+	" to automatically do language-dependent indenting add 'indent' as well.
+	filetype plugin indent on
+	filetype plugin on
+	augroup vimrcEx
+	au!
+		" Switch to the directory of the current file, unless it's a help file.
+		au BufEnter * if &ft != 'help' | silent! cd %:p:h | endif
+
+		" smart indenting for python
+		au FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+		autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
+		set iskeyword+=.,_,$,@,%,#
+	augroup END
+endif " has ("autocmd")
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" delete trailing white space, useful for Python ;)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+func! DeleteTrailingWS()
+  exe "normal mz"
+  %s/\s\+$//ge
+  exe "normal `z"
+endfunc
+autocmd BufWrite * :call DeleteTrailingWS()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" pathogen
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+call pathogen#infect()
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" function keys
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <F1> :NERDTreeToggle ~/git/<cr>
+let NERDTreeShowBookmarks=1
+
+nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+
+nnoremap <C-c> :bdelete<CR>
+nmap <C-S-Left> :tabprevious<cr>
+map <C-S-Left> :tabprevious<cr>
+imap <C-S-Left> <ESC>:tabprevious<cr>
+nmap <C-S-Right> :tabnext<cr>
+map <C-S-Right> :tabnext<cr>
+imap <C-S-Right> <ESC>:tabnext<cr>
+nmap <C-t> :tabnew<cr>
+map <C-t> :tabnew<cr>
+imap <C-t> <ESC>:tabnew<cr>
+map ty :tabclose<cr>
+
+nmap <C-k> :bp<CR>
+nmap <C-j> :bn<CR>
+
+" Ctrl + Arrows - Move around quickly
+nnoremap <c-up> {
+nnoremap <c-down> }
+
+" Shift + Arrows - Visually Select text
+nnoremap  <s-up>     Vk
+nnoremap  <s-down>   Vj
+nnoremap  <s-right>  vl
+nnoremap  <s-left>   vh
+
+map <leader>cs :mksession! ~/.vim/session<CR>
+map <leader>ls :source ~/.vim/session<CR>
+
+map q :q<CR>
+
+" Some Debian-specific things
+if has("autocmd")
+  augroup filetype
+    au BufRead reportbug.*		set ft=mail
+    au BufRead reportbug-*		set ft=mail
+  augroup END
+endif
+
+" Set paper size from /etc/papersize if available (Debian-specific)
+if filereadable("/etc/papersize")
+  try
+    let s:shellbak = &shell
+    let &shell="/bin/sh"
+    let s:papersize = matchstr(system("cat /etc/papersize"), "\\p*")
+    let &shell=s:shellbak
+    if strlen(s:papersize)
+      let &printoptions = "paper:" . s:papersize
+    endif
+  catch /^Vim\%((\a\+)\)\=:E145/
+  endtry
+endif
+
+" grep in files
+cabbrev lvim
+      \ lvim /\<lt><C-R><C-W>\>/gj
+      \ **/*<C-R>=(expand("%:e")=="" ? "" : ".".expand("%:e"))<CR>
+      \ <Bar> lw
+      \ <C-Left><C-Left><C-Left>
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim powerline
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let Powerline_stl_path_style = 'fullshort'
+let g:Powerline_symbols = 'fancy'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" toggle comments with NERDCommenter
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+vmap <C-c> <Leader>c<space>gv
+map <C-c> <Leader>c<space>
