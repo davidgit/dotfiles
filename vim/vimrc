@@ -9,6 +9,7 @@ au BufRead,BufNewFile *.js  set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.html set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.json set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.less set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.sql set ai sw=4 sts=4 et tw=72
 
 " special filetypes
 au BufNewFile *.html,*.py,*.pyw,*.c,*.h,*.json set fileformat=unix
