@@ -264,3 +264,11 @@ let g:Powerline_symbols = 'fancy'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 vmap <C-c> <Leader>c<space>gv
 map <C-c> <Leader>c<space>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SnipMate
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+autocmd FileType python set ft=python.django
+autocmd FileType html set ft=htmldjango.html
+autocmd FileType javascript set ft=javascript-jquery.javascript
