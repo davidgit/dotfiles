@@ -15,6 +15,7 @@ au BufRead,BufNewFile *.sql set ai sw=4 sts=4 et tw=72
 au BufNewFile *.html,*.py,*.pyw,*.c,*.h,*.json set fileformat=unix
 au! BufRead,BufNewFile *.json setfiletype json
 au BufNewFile,BufRead *.less set filetype=less
+au BufNewFile,BufRead *.scss set filetype=sass
 au BufNewFile,BufRead *.styl set filetype=styl
 
 let python_highlight_all=1
