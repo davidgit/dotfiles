@@ -16,6 +16,7 @@
 	mlog = log --no-merges
 	info = ! ( [ -r .git/config ] && cat .git/config ) || ( echo "fatal: Not a git repository" && exit 1 )
 	hist = log --pretty=format:\"%Cred%h%Creset %Cgreen%ad%Creset %s%C(bold white)%d%Creset %Cblue[%an]%Creset\" --graph --date=relative
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 [color]
 	diff = auto
 	status = auto
