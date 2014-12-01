@@ -8,6 +8,7 @@ Create symlinks:
     ln -s ~/.dotfiles/vim/vimrc ~/.vimrc
     ln -s ~/.dotfiles/vim/gvimrc ~/.gvimrc
     ln -s ~/.dotfiles/gitconfig ~/.gitconfig
+    ln -s ~/.dotfiles/psqlrc ~/.psqlrc
 
 Switch to the `~/.dotfiles` directory, and fetch submodules:
 
