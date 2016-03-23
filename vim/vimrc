@@ -167,6 +167,9 @@ if has("autocmd")
 		au FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 		autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
 		set iskeyword+=.,_,$,@,%,#
+
+		" smart indenting for ruby
+		autocmd FileType ruby,rdoc,cucumber,yaml set softtabstop=2 tabstop=2 shiftwidth=2
 	augroup END
 endif " has ("autocmd")
 
@@ -279,4 +282,4 @@ autocmd FileType javascript set ft=javascript-jquery.javascript
 " Syntastic
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:syntastic_javascript_checkers = ['standard']
+"let g:syntastic_javascript_checkers = ['standard']
