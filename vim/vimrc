@@ -17,6 +17,7 @@ au! BufRead,BufNewFile *.json setfiletype json
 au BufNewFile,BufRead *.less set filetype=less
 au BufNewFile,BufRead *.scss set filetype=sass
 au BufNewFile,BufRead *.styl set filetype=styl
+au BufNewFile,BufRead *.groovy set filetype=groovy
 
 let python_highlight_all=1
 syntax on
@@ -169,7 +170,7 @@ if has("autocmd")
 		au FileType python set iskeyword+=.,_,$,@,%,#
 
 		" smart indenting for ruby
-		autocmd FileType ruby,rdoc,cucumber,yaml set softtabstop=2 tabstop=2 shiftwidth=2
+		autocmd FileType ruby,rdoc,cucumber,yaml,groovy set softtabstop=2 tabstop=2 shiftwidth=2
 	augroup END
 endif " has ("autocmd")
 
