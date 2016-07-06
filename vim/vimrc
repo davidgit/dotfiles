@@ -170,7 +170,7 @@ if has("autocmd")
 		au FileType python set iskeyword+=.,_,$,@,%,#
 
 		" smart indenting for ruby
-		autocmd FileType ruby,rdoc,cucumber,yaml,groovy set softtabstop=2 tabstop=2 shiftwidth=2
+		autocmd FileType ruby,rdoc,cucumber,yaml,groovy set softtabstop=2 tabstop=2 shiftwidth=2 expandtab
 	augroup END
 endif " has ("autocmd")
 
@@ -284,3 +284,11 @@ autocmd FileType javascript set ft=javascript-jquery.javascript
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "let g:syntastic_javascript_checkers = ['standard']
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vim-Notes
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:notes_suffix = '.md'
+let g:notes_directories = ['~/newrelic/notes']
