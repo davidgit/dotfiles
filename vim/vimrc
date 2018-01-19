@@ -6,6 +6,7 @@ set ffs=unix,dos,mac
 " doc strs
 au BufRead,BufNewFile *.py  set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.js  set ai sw=4 sts=4 et tw=72
+au BufRead,BufNewFile *.jsx  set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.html set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.json set ai sw=4 sts=4 et tw=72
 au BufRead,BufNewFile *.less set ai sw=4 sts=4 et tw=72
@@ -18,6 +19,7 @@ au BufNewFile,BufRead *.less set filetype=less
 au BufNewFile,BufRead *.scss set filetype=sass
 au BufNewFile,BufRead *.styl set filetype=styl
 au BufNewFile,BufRead *.groovy set filetype=groovy
+au BufNewFile,BufRead *.erb set filetype=ruby
 
 let python_highlight_all=1
 syntax on
@@ -292,3 +294,8 @@ autocmd FileType javascript set ft=javascript-jquery.javascript
 
 let g:notes_suffix = '.md'
 let g:notes_directories = ['~/newrelic/notes']
+
+syntax match notesInProgress /\<\(CURRENT\|INPROGRESS\|STARTED\|WIP\|INFO\)\>/
+highlight def link notesXXX ErrorMsg
+highlight def link notesTODO Title
+highlight def link notesFixMe Todo
