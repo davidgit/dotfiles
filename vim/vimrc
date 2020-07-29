@@ -4,12 +4,18 @@ set encoding=utf-8
 set ffs=unix,dos,mac
 
 " doc strs
-au BufRead,BufNewFile *.py  set ai sw=4 sts=4 et tw=72
-au BufRead,BufNewFile *.js  set ai sw=4 sts=4 et tw=72
-au BufRead,BufNewFile *.jsx  set ai sw=4 sts=4 et tw=72
-au BufRead,BufNewFile *.html set ai sw=4 sts=4 et tw=72
-au BufRead,BufNewFile *.json set ai sw=4 sts=4 et tw=72
-au BufRead,BufNewFile *.less set ai sw=4 sts=4 et tw=72
+au BufNewFile,BufRead *.py set tabstop=4
+au BufNewFile,BufRead *.py set softtabstop=4
+au BufNewFile,BufRead *.py set shiftwidth=4
+au BufNewFile,BufRead *.py set textwidth=79
+au BufNewFile,BufRead *.py set expandtab
+au BufNewFile,BufRead *.py set autoindent
+au BufNewFile,BufRead *.py set fileformat=unix
+
+au BufNewFile,BufRead *.js,*.html,*.css,*.jsx,*.json,*.scss,*.less set tabstop=2
+au BufNewFile,BufRead *.js,*.html,*.css,*.jsx,*.json,*.scss,*.less set softtabstop=2
+au BufNewFile,BufRead *.js,*.html,*.css,*.jsx,*.json,*.scss,*.less set shiftwidth=2
+
 au BufRead,BufNewFile *.sql set ai sw=4 sts=4 et tw=72
 
 " special filetypes
@@ -73,8 +79,7 @@ set number
 set numberwidth=1
 set ttyfast
 
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
-colorscheme wombat256mod
+colorscheme onedark
 
 " tab labels show the filename without path(tail)
 set guitablabel=%N/\ %t\ %M
@@ -151,30 +156,11 @@ set wildmode=longest,list
 set wildignore=*.o,*.obj,*.bak,*.exe,*.py[co],*.swp,*~,*.class
 " paste mode
 set pastetoggle=<F2>
+set clipboard=unnamed
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " autocommands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("autocmd")
-	" Enabled file type detection
-	" Use the default filetype settings. If you also want to load indent files
-	" to automatically do language-dependent indenting add 'indent' as well.
-	filetype plugin indent on
-	filetype plugin on
-	augroup vimrcEx
-	au!
-		" Switch to the directory of the current file, unless it's a help file.
-		au BufEnter * if &ft != 'help' | silent! cd %:p:h | endif
-
-		" smart indenting for python
-		au FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-		autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
-		au FileType python set iskeyword+=.,_,$,@,%,#
-
-		" smart indenting for ruby
-		autocmd FileType ruby,rdoc,cucumber,yaml,groovy set softtabstop=2 tabstop=2 shiftwidth=2 expandtab
-	augroup END
-endif " has ("autocmd")
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " delete trailing white space, useful for Python ;)
@@ -187,8 +173,61 @@ endfunc
 autocmd BufWrite * :call DeleteTrailingWS()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
-" pathogen
+" python with virtualenv support
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+  "project_base_dir = os.environ['VIRTUAL_ENV']
+  "activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  "execfile(activate_this, dict(__file__=activate_this))
+"EOF
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Make sure you use single quotes
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+Plug 'liuchengxu/vista.vim'
+
+Plug 'jeetsukumaran/vim-pythonsense'
+
+Plug 'itchyny/lightline.vim'
+
+Plug 'joshdick/onedark.vim'
+
+Plug 'sheerun/vim-polyglot'
+
+Plug 'dense-analysis/ale'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'SirVer/ultisnips', {'for': ['sh', 'python', 'django', 'htmldjango', 'javascript', 'javascript_react', 'json', 'markdown']}
+Plug 'honza/vim-snippets', {'for': ['sh', 'python', 'django', 'htmldjango', 'javascript', 'javascript_react', 'json', 'markdown']}
+
+" Use release branch (recommend)
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Initialize plugin system
+call plug#end()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" pathogen""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call pathogen#infect()
 
 
@@ -261,10 +300,15 @@ cabbrev lvim
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim powerline
+" Vista
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-let Powerline_stl_path_style = 'fullshort'
-let g:Powerline_symbols = 'fancy'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" lightline
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:lightline = {
+	  \ 'colorscheme': 'onedark',
+      \ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " toggle comments with NERDCommenter
@@ -273,29 +317,213 @@ vmap <C-c> <Leader>c<space>gv
 map <C-c> <Leader>c<space>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
+" ALE
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ale_linters = {
+      \   'python': ['flake8', 'pylint'],
+      \   'ruby': ['standardrb', 'rubocop'],
+      \   'javascript': ['eslint'],
+      \}
+
+let g:ale_fixers = {
+      \    'python': ['yapf'],
+      \}
+nmap <F10> :ALEFix<CR>
+let g:ale_fix_on_save = 1
+
+function! LinterStatus() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+
+  return l:counts.total == 0 ? '✨ all good ✨' : printf(
+        \   '😞 %dW %dE',
+        \   all_non_errors,
+        \   all_errors
+        \)
+endfunction
+
+set statusline=
+set statusline+=%m
+set statusline+=\ %f
+set statusline+=%=
+set statusline+=\ %{LinterStatus()}
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ALE
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" utilsnips
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:SuperTabDefaultCompletionType    = '<C-n>'
+let g:SuperTabCrMapping                = 0
+let g:UltiSnipsExpandTrigger           = '<tab>'
+let g:UltiSnipsJumpForwardTrigger      = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
+let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
+
+let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsListSnippets="<c-t>"
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SnipMate
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-
 autocmd FileType python set ft=python.django
 autocmd FileType html set ft=htmldjango.html
-autocmd FileType javascript set ft=javascript-jquery.javascript
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Syntastic
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"let g:syntastic_javascript_checkers = ['standard']
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vim-Notes
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:notes_suffix = '.md'
-let g:notes_directories = ['~/newrelic/notes']
-
-syntax match notesInProgress /\<\(CURRENT\|INPROGRESS\|STARTED\|WIP\|INFO\)\>/
-highlight def link notesXXX ErrorMsg
-highlight def link notesTODO Title
-highlight def link notesFixMe Todo
