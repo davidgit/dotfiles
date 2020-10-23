@@ -24,3 +24,5 @@
 [core]
 	pager = less -R
 	editor = /usr/local/bin/vim
+[pull]
+	rebase = true
