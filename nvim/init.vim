@@ -254,8 +254,6 @@ imap <C-S-Right> <ESC>:tabnext<cr>
 nmap <C-t> :tabnew<cr>
 map <C-t> :tabnew<cr>
 imap <C-t> <ESC>:tabnew<cr>
-map <C-w> :tabclose<cr>
-imap <C-w> <ESC>:tabclose<cr>
 
 nmap <C-k> :bp<CR>
 nmap <C-j> :bn<CR>
@@ -402,6 +400,8 @@ nnoremap <silent> <leader>w :FZF ~/workplace<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " coc.nvim
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " TextEdit might fail if hidden is not set.
 "set hidden
 
