@@ -37,7 +37,7 @@ au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
 " make trailing whitespace be flagged as bad.
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
-filetype plugin on
+filetype plugin indent on
 set iskeyword+=.
 
 " don not be compatible with vi
@@ -78,8 +78,6 @@ set number
 " Use 1 col + 1 space for numbers
 set numberwidth=1
 set ttyfast
-
-colorscheme onedark
 
 " tab labels show the filename without path(tail)
 set guitablabel=%N/\ %t\ %M
@@ -127,6 +125,8 @@ set vb t_vb=
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " editing
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"set autochdir
 " backspace over anything! (Super backspace!)
 set backspace=indent,eol,start
 " For .2 seconds
@@ -179,16 +179,16 @@ autocmd BufWrite * :call DeleteTrailingWS()
 "import os
 "import sys
 "if 'VIRTUAL_ENV' in os.environ:
-  "project_base_dir = os.environ['VIRTUAL_ENV']
-  "activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  "execfile(activate_this, dict(__file__=activate_this))
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
 "EOF
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-plug
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+if empty(glob('~/.nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.nvim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
@@ -196,47 +196,52 @@ endif
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.nvim/plugged')
 
 " Make sure you use single quotes
 
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-
-Plug 'liuchengxu/vista.vim'
-
-Plug 'jeetsukumaran/vim-pythonsense'
-
-Plug 'itchyny/lightline.vim'
-
+" Colors
 Plug 'joshdick/onedark.vim'
 
+" Status bar
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Initial page
+Plug 'mhinz/vim-startify'
+
+" Icons
+Plug 'ryanoasis/vim-devicons'
+
+" Nerd stuff
+Plug 'preservim/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+
+" Search
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
+Plug 'junegunn/fzf.vim'
+
+" Git
+Plug 'tpope/vim-fugitive'
+
+" Python it!
+Plug 'jeetsukumaran/vim-pythonsense'
 Plug 'sheerun/vim-polyglot'
+Plug 'jiangmiao/auto-pairs'
 
-Plug 'dense-analysis/ale'
-
+" Code completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'SirVer/ultisnips', {'for': ['sh', 'python', 'django', 'htmldjango', 'javascript', 'javascript_react', 'json', 'markdown']}
+" Snippets
 Plug 'honza/vim-snippets', {'for': ['sh', 'python', 'django', 'htmldjango', 'javascript', 'javascript_react', 'json', 'markdown']}
-
-" Use release branch (recommend)
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Initialize plugin system
 call plug#end()
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" pathogen""""""""""""""""""""""""""""""""""""""""""""""""""""""
-call pathogen#infect()
-
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " function keys
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-map <F1> :NERDTreeToggle ~/git/<cr>
-let NERDTreeShowBookmarks=1
-
 nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 
 nnoremap <C-c> :bdelete<CR>
@@ -249,7 +254,8 @@ imap <C-S-Right> <ESC>:tabnext<cr>
 nmap <C-t> :tabnew<cr>
 map <C-t> :tabnew<cr>
 imap <C-t> <ESC>:tabnew<cr>
-map ty :tabclose<cr>
+map <C-w> :tabclose<cr>
+imap <C-w> <ESC>:tabclose<cr>
 
 nmap <C-k> :bp<CR>
 nmap <C-j> :bn<CR>
@@ -264,8 +270,8 @@ nnoremap  <s-down>   Vj
 nnoremap  <s-right>  vl
 nnoremap  <s-left>   vh
 
-map <leader>cs :mksession! ~/.vim/session<CR>
-map <leader>ls :source ~/.vim/session<CR>
+map <leader>cs :mksession! ~/.nvim/session<CR>
+map <leader>ls :source ~/.nvim/session<CR>
 
 map q :q<CR>
 
@@ -300,15 +306,36 @@ cabbrev lvim
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vista
+" Startify
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:startify_files_number           = 8
+let g:startify_bookmarks = ['~/.dotfiles/nvim/init.vim']
+
+" Update session automatically as you exit vim
+let g:startify_session_persistence    = 1
+
+" Fancy custom header
+let g:startify_custom_header = [
+  \ "  ",
+  \ '   ╻ ╻   ╻   ┏┳┓',
+  \ '   ┃┏┛   ┃   ┃┃┃',
+  \ '   ┗┛    ╹   ╹ ╹',
+  \ '   ',
+  \ ]
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" lightline
+" Airline
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:lightline = {
-	  \ 'colorscheme': 'onedark',
-      \ }
+colorscheme onedark
+set guifont=Ubuntu\ Mono\ derivative\ Powerline:12
+let g:Powerline_symbols = 'fancy'
+let g:airline_theme='onedark'
+let g:airline_powerline_fonts=1
+let g:airline_skip_empty_sections = 1
+let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " toggle comments with NERDCommenter
@@ -317,45 +344,66 @@ vmap <C-c> <Leader>c<space>gv
 map <C-c> <Leader>c<space>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" ALE
+" Autolaunch NERDTree
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_linters = {
-      \   'python': ['flake8', 'pylint'],
-      \   'ruby': ['standardrb', 'rubocop'],
-      \   'javascript': ['eslint'],
-      \}
+let g:NERDTreeWinPos = "left"
+let g:NERDTreeIgnore = []
+let g:NERDTreeGitStatusUseNerdFonts = 1
 
-let g:ale_fixers = {
-      \    'python': ['yapf'],
-      \}
-nmap <F10> :ALEFix<CR>
-let g:ale_fix_on_save = 1
+map <C-b> :NERDTreeToggle<CR>
 
-function! LinterStatus() abort
-  let l:counts = ale#statusline#Count(bufnr(''))
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:fzf_layout = { 'up' : '20%' }
 
-  let l:all_errors = l:counts.error + l:counts.style_error
-  let l:all_non_errors = l:counts.total - l:all_errors
+let $FZF_DEFAULT_OPTS=' --layout=reverse --margin=1'
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
-  return l:counts.total == 0 ? '✨ all good ✨' : printf(
-        \   '😞 %dW %dE',
-        \   all_non_errors,
-        \   all_errors
-        \)
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = 20
+  let width = 120
+  let horizontal = float2nr(width / 2)
+  let vertical = 1
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': vertical,
+        \ 'col': horizontal,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
 endfunction
 
-set statusline=
-set statusline+=%m
-set statusline+=\ %f
-set statusline+=%=
-set statusline+=\ %{LinterStatus()}
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+nnoremap <silent> <leader>f :FZF<cr>
+nnoremap <silent> <leader>F :FZF ~<cr>
+nnoremap <silent> <leader>w :FZF ~/workplace<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" ALE
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+" coc.nvim
 " TextEdit might fail if hidden is not set.
-set hidden
+"set hidden
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -395,11 +443,7 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. Coc only does snippet and additional edit on confirm.
@@ -460,70 +504,20 @@ nmap <leader>ac  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
 nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
 nmap <silent> <C-s> <Plug>(coc-range-select)
 xmap <silent> <C-s> <Plug>(coc-range-select)
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+set statusline^=%{coc#status()}
 
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+let g:coc_filetype_map = {
+  \ 'htmldjango': 'html',
+  \ 'django': 'python',
+  \ }
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" utilsnips
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:SuperTabDefaultCompletionType    = '<C-n>'
-let g:SuperTabCrMapping                = 0
-let g:UltiSnipsExpandTrigger           = '<tab>'
-let g:UltiSnipsJumpForwardTrigger      = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
-let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
-
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsListSnippets="<c-t>"
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" SnipMate
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType python set ft=python.django
-autocmd FileType html set ft=htmldjango.html
+let g:python_host_prog = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'

@@ -1,0 +1,58 @@
+{
+  "diagnostic.errorSign": "✘",
+  "diagnostic.warningSign": "⚠",
+  "diagnostic.infoSign": "i",
+  "diagnostic.hintSign": "➤",
+  "diagnostic.virtualText": true,
+  "suggest.echodocSupport": true,
+  "suggest.maxCompleteItemCount": 20,
+  "snippets.extends": {
+    "htmldjango": [
+      "html"
+    ],
+    "django": [
+      "python"
+    ]
+  },
+  "snippets.ultisnips.directories": [
+    "UltiSnips",
+    "~/.nvim/snippets"
+  ],
+  "coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "html",
+    "Markdown",
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "json",
+    "javascriptreact",
+    "typescript.tsx",
+    "python"
+  ],
+  "eslint.filetypes": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact",
+    "typescript.tsx"
+  ],
+  "html.enable": true,
+  "html.format.enable": true,
+  "html.filetypes": [
+    "html",
+    "handlebars",
+    "htmldjango"
+  ],
+  "css.enable": true,
+  "python.venvPath": "~/.local/share/virtualenvs/",
+  "python.linting.pylintArgs": [
+    "--disable=C0111",
+    "--load-plugins",
+    "pylint_django"
+  ],
+  "python.formatting.provider": "black",
+  "python.linting.pylintEnabled": true,
+  "python.linting.flake8Enabled": false
+}
