@@ -1,6 +1,6 @@
 [user]
 	name = David Gay i Tello
-	email = david.gay.tello@gmail.com
+	email = david.gay.tello@protonmail.com
 [giggle]
 	main-window-maximized = false
 	main-window-geometry = 1453x832+74+41
@@ -23,6 +23,15 @@
 	branch = auto
 [core]
 	pager = less -R
-	editor = /usr/local/bin/vim
+	editor = nvim
 [pull]
 	rebase = true
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+
+# This next lines include Netlify's Git Credential Helper configuration in your Git configuration.
+[include]
+  path = /home/davidgit/.netlify/helper/git-config

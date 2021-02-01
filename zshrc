@@ -94,7 +94,8 @@ export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # You may need to manually set your language environment
-export LANG=ca.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -121,3 +122,8 @@ alias python=python3
 alias pip=pip3
 
 
+
+# The next line updates PATH for Netlify's Git Credential Helper.
+if [ -f '/home/davidgit/.netlify/helper/path.zsh.inc' ]; then source '/home/davidgit/.netlify/helper/path.zsh.inc'; fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

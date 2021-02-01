@@ -307,7 +307,7 @@ cabbrev lvim
 " Startify
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:startify_files_number           = 8
-let g:startify_bookmarks = ['~/.dotfiles/nvim/init.vim']
+let g:startify_bookmarks = ['~/.dotfiles/nvim/init.vim', '~/workspace/recreat/src']
 
 " Update session automatically as you exit vim
 let g:startify_session_persistence    = 1
@@ -355,6 +355,7 @@ map <C-b> :NERDTreeToggle<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:fzf_layout = { 'up' : '20%' }
 
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 let $FZF_DEFAULT_OPTS=' --layout=reverse --margin=1'
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
@@ -394,6 +395,7 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
+nnoremap <C-p> :FZF<CR>
 nnoremap <silent> <leader>f :FZF<cr>
 nnoremap <silent> <leader>F :FZF ~<cr>
 nnoremap <silent> <leader>w :FZF ~/workplace<cr>
@@ -401,6 +403,8 @@ nnoremap <silent> <leader>w :FZF ~/workplace<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " coc.nvim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
 
 " TextEdit might fail if hidden is not set.
 "set hidden
